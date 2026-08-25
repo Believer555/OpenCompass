@@ -7,6 +7,7 @@ from opencompass.partitioners import NaivePartitioner, NumWorkerPartitioner
 from opencompass.runners import LocalRunner
 from opencompass.summarizers import DefaultSummarizer
 from opencompass.tasks import OpenICLEvalTask, OpenICLInferTask
+from opencompass.utils.text_postprocessors import extract_non_reasoning_content
 
 with read_base():
     from opencompass.configs.datasets.MMMU_Pro.MMMU_Pro_10c_vlmevalkit_gen import (  # noqa: E501
@@ -59,7 +60,9 @@ models = [
             presence_penalty=0.0,
         ),
         retry=10,
-        timeout=3600)
+        timeout=3600,
+        pred_postprocessor=dict(type=extract_non_reasoning_content),
+        )
 ]
 
 infer = dict(partitioner=dict(

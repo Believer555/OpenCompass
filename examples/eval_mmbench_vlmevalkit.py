@@ -7,6 +7,7 @@ from opencompass.partitioners import NaivePartitioner, NumWorkerPartitioner
 from opencompass.runners import LocalRunner
 from opencompass.summarizers import DefaultSummarizer
 from opencompass.tasks import OpenICLEvalTask, OpenICLInferTask
+from opencompass.utils.text_postprocessors import extract_non_reasoning_content
 
 with read_base():
     from opencompass.configs.datasets.MMBench.MMBench_DEV_EN_vlmevalkit_gen import (  # noqa: E501
@@ -14,7 +15,7 @@ with read_base():
 
 vlmeval_eval_kwargs = dict(
     model='kimi-k2.6',
-    api_base='https://token.pjlab.org.cn/v1/chat/completions',
+    api_base='https://example.com/v1/chat/completions',
     nproc=4,
     retry=3,
     timeout=600,
@@ -31,7 +32,7 @@ models = [
          abbr='kimi-k2.6-chat-completions',
          path='kimi-k2.6',
          key='ENV',
-         openai_api_base='https://token.pjlab.org.cn/v1',
+         openai_api_base='https://example.com/v1',
          tokenizer_path='gpt-4',
          image_format='JPEG',
          image_min_edge=100,
@@ -42,7 +43,9 @@ models = [
          query_per_second=3,
          temperature=0.0,
          retry=3,
-         timeout=3600)
+         timeout=3600,
+         pred_postprocessor=dict(type=extract_non_reasoning_content),
+         )
 ]
 
 infer = dict(partitioner=dict(type=NumWorkerPartitioner, num_worker=1),
